@@ -28,7 +28,7 @@ def __send_email(msg: str) -> None:
     # Create Email
     mail_from = gmail_user
     mail_to = gmail_user
-    mail_subject = f'Weather Today {datetime.today().strftime("%m/%d/%Y")}'
+    mail_subject = f'Here Is The Weather For Today {datetime.today().strftime("%m/%d/%Y")}'
     mail_message = f'Subject: {mail_subject}\n\n{msg}'
 
     # Send Email
@@ -40,6 +40,7 @@ def __send_email(msg: str) -> None:
 
 
 def handler(event, context):
+    ''' Entry point to our lambda function and our Dockerfile'''
     response = requests.get(url.format(
         lat=lat,
         lon=lon,
