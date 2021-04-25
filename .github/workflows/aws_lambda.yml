@@ -56,8 +56,11 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         IMAGE_TAG: latest
+        NUM: 334290667782
+        SERVER_LOCATION: us-west-2
+        
       run: |
         aws lambda update-function-code \
         --function-name ${{ env.AWS_LAMBDA_FUNC_NAME }} \
-        --image-uri ${{ secrets.AWS_ECR_IMAGE_URI }}:${{ env.IMAGE_TAG }}
+        --image-uri ${{ env.NUM }}.dkr.ecr.${{ env.SERVER_LOCATION }}.amazonaws.com/aws-lambda-demo-ecr:${{ env.IMAGE_TAG }}
       
