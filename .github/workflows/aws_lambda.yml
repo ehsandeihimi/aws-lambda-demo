@@ -34,6 +34,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: aws-lambda-demo-ecr
+        IMAGE_TAG: latest
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -45,16 +46,21 @@ jobs:
             --build-arg AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
             --build-arg EMAIL_USER="${{ secrets.EMAIL_USER }}" \
             --build-arg EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}" \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }} .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:${{ env.ECR_IMAGE_TAG }}"
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     - name: Deploy to AWS Lambda
-      run: |
-        aws lambda update-function-code \
-        --function-name ${{ env.AWS_LAMBDA_FUNC_NAME }} \
-        --image-uri "${{ secrets.AWS_ECR_IMAGE_URI }}:${{ env.ECR_IMAGE_TAG }}"
       env:
         AWS_LAMBDA_FUNC_NAME: aws-lambda-demo-lambda
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        IMAGE_TAG: latest
+        NUM: 334290667782
+        SERVER_LOCATION: us-west-2
+        
+      run: |
+        aws lambda update-function-code \
+        --function-name ${{ env.AWS_LAMBDA_FUNC_NAME }} \
+        --image-uri ${{ secrets.AWS_ECR_IMAGE_URI }}
+      
